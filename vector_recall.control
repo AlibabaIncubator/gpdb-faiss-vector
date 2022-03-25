@@ -1,0 +1,4 @@
+comment = 'Extension for vector_recall'
+default_version = '0.1.0'
+module_pathname = '$libdir/vector_recall'
+relocatable = true
