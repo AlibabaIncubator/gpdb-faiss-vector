@@ -1,3 +1,8 @@
+/*  Copyright 2022 Alibaba Group. All rights reserved.
+
+    Distributed under MIT license.
+    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
+*/
 
 #ifndef CACHE_C_H_
 #define CACHE_C_H_

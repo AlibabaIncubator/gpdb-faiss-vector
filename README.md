@@ -74,3 +74,8 @@ vector_recall extension for greenplum-db
 [向量批量召回计划](https://yuque.antfin-inc.com/docs/share/684c1993-8d7b-46d4-a9a8-f77552836db4)
 
 [向量批量召回相关UDF说明](https://yuque.antfin.com/docs/share/162d52be-c9dd-4bbd-9e92-4ef128195ab3?#)
+
+# License
+gpdb-faiss-vector is developed by Alibaba and licensed under the MIT License
+This product contains various third-party components under other open source licenses.
+See the NOTICE file for more information.

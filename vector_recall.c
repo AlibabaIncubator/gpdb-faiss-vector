@@ -1,3 +1,9 @@
+/*  Copyright 2022 Alibaba Group. All rights reserved.
+
+    Distributed under MIT license.
+    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
+*/
+
 #include <string.h>
 
 #include "postgres.h"
