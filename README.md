@@ -68,6 +68,16 @@ vector_recall extension for greenplum-db
 
 *topk INT* 表示期望的全局的topk的k
 
+## reset_cache total_charge_cache prune_cache
+对cache控制
+
+使其在每个segment上执行
+```sql
+SELECT gp_segment_id,
+    total_charge_cache()
+FROM gp_dist_random('gp_id')
+ORDER BY gp_segment_id;
+```
 
 # 相关链接
 
@@ -79,3 +89,4 @@ vector_recall extension for greenplum-db
 gpdb-faiss-vector is developed by Alibaba and licensed under the MIT License
 This product contains various third-party components under other open source licenses.
 See the NOTICE file for more information.
+

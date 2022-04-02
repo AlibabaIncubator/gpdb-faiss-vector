@@ -90,18 +90,15 @@ CREATE AGGREGATE topk_merge(idxs BIGINT[], distance REAL[], topk INT) (
 
 CREATE OR REPLACE FUNCTION reset_cache(capacity BIGINT)
     RETURNS BOOLEAN
-    EXECUTE ON ALL SEGMENTS
     AS 'MODULE_PATHNAME', 'reset_cache'
     LANGUAGE C;
 
 CREATE OR REPLACE FUNCTION total_charge_cache()
     RETURNS BIGINT
-    EXECUTE ON ALL SEGMENTS
     AS 'MODULE_PATHNAME', 'total_charge_cache'
     LANGUAGE C;
 
 CREATE OR REPLACE FUNCTION prune_cache()
     RETURNS void
-    EXECUTE ON ALL SEGMENTS
     AS 'MODULE_PATHNAME', 'prune_cache'
     LANGUAGE C;

@@ -7,7 +7,6 @@ REGRESS = vector_recall
 CACHE = cache
 FAISS = faiss
 
-PG_CPPFLAGS = -I$(FAISS)/c_api
 PG_LDFLAGS = -L$(FAISS)/build/c_api
 SHLIB_LINK = -lfaiss_c
 

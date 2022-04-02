@@ -14,12 +14,12 @@
 
 #include "cache/cache_c.h"
 
-#include "Index_c.h"
-#include "error_c.h"
-#include "index_io_c.h"
-#include "index_factory_c.h"
-#include "AutoTune_c.h"
-#include "impl/AuxIndexStructures_c.h"
+#include "faiss/c_api/Index_c.h"
+#include "faiss/c_api/error_c.h"
+#include "faiss/c_api/index_io_c.h"
+#include "faiss/c_api/index_factory_c.h"
+#include "faiss/c_api/AutoTune_c.h"
+#include "faiss/c_api/impl/AuxIndexStructures_c.h"
 
 #ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
