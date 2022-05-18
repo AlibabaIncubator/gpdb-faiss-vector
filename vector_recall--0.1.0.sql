@@ -1,5 +1,5 @@
-SET search_path = public;
--- SET client_min_messages TO DEBUG3;
+-- complain if script is sourced in psql, rather than via CREATE EXTENSION
+\echo Use "CREATE EXTENSION vector_recall" to load this file. \quit
 
 CREATE TYPE __vector_index_search_results AS (query_vector REAL[], query_idx BIGINT, vector_idxs BIGINT[], distances REAL[]);
 CREATE TYPE __topk_merge_result AS (idxs BIGINT[], distances REAL[]);

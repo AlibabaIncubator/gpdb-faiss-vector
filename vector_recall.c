@@ -98,19 +98,19 @@ FaissIndex *bytea2faissindex(const bytea *index_bytea);
 cache_t *get_cache(size_t capacity);
 void cache_item_deleter(const char *key, size_t keylen, void *value);
 
-// it's too late to set env OMP_WAIT_POLICY
-/*
+#if 0
+/* it's too late to set env OMP_WAIT_POLICY */
 void _PG_init(void);
 void _PG_init(void)
 {
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: old env OMP_WAIT_POLICY: %s", __func__, getenv("OMP_WAIT_POLICY"))));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: old env OMP_WAIT_POLICY: %s", __func__, getenv("OMP_WAIT_POLICY"))));
     if (setenv("OMP_WAIT_POLICY", "PASSIVE", 1) != 0)
     {
-        ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: faild to set env OMP_WAIT_POLICY.", __func__)));
+        ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: faild to set env OMP_WAIT_POLICY.", __func__)));
     }
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: now env OMP_WAIT_POLICY: %s", __func__, getenv("OMP_WAIT_POLICY"))));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: now env OMP_WAIT_POLICY: %s", __func__, getenv("OMP_WAIT_POLICY"))));
 }
-*/
+#endif
 
 PG_FUNCTION_INFO_V1(array_1d_extend_transfn);
 Datum array_1d_extend_transfn(PG_FUNCTION_ARGS)
@@ -187,7 +187,7 @@ Datum faiss_index_create(PG_FUNCTION_ARGS)
     uint32 dim = PG_GETARG_UINT32(0);
     char *description = text_to_cstring(PG_GETARG_TEXT_P(1));
     FaissMetricType metric_type = PG_GETARG_INT32(2);
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: dim:%d, metric_type:%d", __func__, dim, metric_type)));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: dim:%d, metric_type:%d", __func__, dim, metric_type)));
 
     FaissIndex *index = NULL;
     FAISS_CHECK(faiss_index_factory(&index, dim, description, metric_type));
@@ -208,7 +208,7 @@ Datum faiss_index_train(PG_FUNCTION_ARGS)
     CHECK(dim == faiss_Index_d(index));
 
     int64 vectors_num = ARRNELEMS(vectors_array) / dim;
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: dim:%d, vectors_num:%ld", __func__, dim, vectors_num)));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: dim:%d, vectors_num:%ld", __func__, dim, vectors_num)));
 
     if (faiss_Index_is_trained(index))
         ereport(WARNING, (errcode(ERRCODE_INTERNAL_ERROR), errmsg("%s: faiss index can't or needn't train", __func__)));
@@ -234,7 +234,7 @@ Datum faiss_index_add(PG_FUNCTION_ARGS)
     CHECK(dim == faiss_Index_d(index));
 
     int64 vectors_num = ARRNELEMS(vectors_array) / dim;
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: vectors_num:%ld", __func__, vectors_num)));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: vectors_num:%ld", __func__, vectors_num)));
 
     if (unlikely(PG_ARGISNULL(3)))
     {
@@ -259,7 +259,7 @@ Datum faiss_index_set_runtime_parameters(PG_FUNCTION_ARGS)
     FaissIndex *index = bytea2faissindex(index_bytea);
 
     char *runtime_parameters = text_to_cstring(PG_GETARG_TEXT_P(1));
-    ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
+    ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
 
     FaissParameterSpace *parameter_space = NULL;
     FAISS_CHECK(faiss_ParameterSpace_new(&parameter_space));
@@ -317,7 +317,7 @@ Datum create_index_transfn(PG_FUNCTION_ARGS)
         {
             char *runtime_parameters = text_to_cstring(PG_GETARG_TEXT_P(5));
             strncpy(internal_state->runtime_parameters, runtime_parameters, sizeof(internal_state->runtime_parameters) / sizeof(internal_state->runtime_parameters[0]));
-            ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
+            ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
         }
     }
     else
@@ -363,7 +363,7 @@ Datum create_index_finalfn(PG_FUNCTION_ARGS)
     if (strnlen(internal_state->runtime_parameters, sizeof(internal_state->runtime_parameters) / sizeof(internal_state->runtime_parameters[0])))
     {
         char *runtime_parameters = internal_state->runtime_parameters;
-        ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
+        ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: input runtime_parameters: %s", __func__, runtime_parameters)));
         FaissParameterSpace *parameter_space = NULL;
         FAISS_CHECK(faiss_ParameterSpace_new(&parameter_space));
         FAISS_CHECK(faiss_ParameterSpace_set_index_parameters(parameter_space, index, runtime_parameters));
@@ -414,7 +414,7 @@ Datum faiss_index_search(PG_FUNCTION_ARGS)
             if (handle)
             {
                 faiss_index = cache_value(cache, handle);
-                ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache hit: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
+                ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache hit: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
             }
             else
             {
@@ -422,7 +422,7 @@ Datum faiss_index_search(PG_FUNCTION_ARGS)
                 bytea *index_bytea = PG_GETARG_BYTEA_P(0);
                 faiss_index = bytea2faissindex(index_bytea);
                 handle = cache_insert(cache, key, keylen, faiss_index, VARSIZE(index_bytea), cache_item_deleter);
-                ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache miss: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
+                ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache miss: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
             }
         }
         else
@@ -587,7 +587,7 @@ Datum faiss_index_range_search(PG_FUNCTION_ARGS)
             if (handle)
             {
                 faiss_index = cache_value(cache, handle);
-                ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache hit: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
+                ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache hit: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
             }
             else
             {
@@ -595,7 +595,7 @@ Datum faiss_index_range_search(PG_FUNCTION_ARGS)
                 bytea *index_bytea = PG_GETARG_BYTEA_P(0);
                 faiss_index = bytea2faissindex(index_bytea);
                 handle = cache_insert(cache, key, keylen, faiss_index, VARSIZE(index_bytea), cache_item_deleter);
-                ereport(DEBUG2, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache miss: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
+                ereport(DEBUG1, (errcode(ERRCODE_SUCCESSFUL_COMPLETION), errmsg("%s: cache miss: faiss_index:%p handle:%p", __func__, faiss_index, handle)));
             }
         }
         else
