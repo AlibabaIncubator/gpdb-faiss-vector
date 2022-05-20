@@ -4,7 +4,7 @@
 CREATE TYPE __vector_index_search_results AS (query_vector REAL[], query_idx BIGINT, vector_idxs BIGINT[], distances REAL[]);
 CREATE TYPE __topk_merge_result AS (idxs BIGINT[], distances REAL[]);
 
-CREATE OR REPLACE FUNCTION array_1d_extend_transfn(internal, REAL[])
+CREATE OR REPLACE FUNCTION array_1d_extend_transfn(internal, real_array REAL[])
     RETURNS internal
     AS 'MODULE_PATHNAME', 'array_1d_extend_transfn'
     LANGUAGE C;
@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION array_1d_extend_finalfn(internal)
     AS 'MODULE_PATHNAME', 'array_1d_extend_finalfn'
     LANGUAGE C;
 
-CREATE AGGREGATE array_1d_extend(REAL[]) (
+CREATE AGGREGATE array_1d_extend(real_array REAL[]) (
     SFUNC = array_1d_extend_transfn,
     STYPE = internal,
     FINALFUNC = array_1d_extend_finalfn
